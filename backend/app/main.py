@@ -53,10 +53,21 @@ SKIN_WEIGHTS = {
 }
 _skin_model = None
 
+
+def env_list(name: str, defaults: list[str]) -> list[str]:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return defaults
+    return [item.strip().rstrip("/") for item in raw.split(",") if item.strip()]
+
+
+FRONTEND_ORIGINS = env_list("FRONTEND_ORIGINS", ["http://127.0.0.1:5173", "http://localhost:5173"])
+PUBLIC_API_URL = os.environ.get("PUBLIC_API_URL", "http://127.0.0.1:8000").strip().rstrip("/")
+
 app = FastAPI(title="Vitalis AI API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -854,7 +865,7 @@ def redirect_discord() -> RedirectResponse:
 
 @app.get("/qr/discord")
 def qr_discord() -> StreamingResponse:
-    image = qrcode.make("http://127.0.0.1:8000/redirect/discord")
+    image = qrcode.make(f"{PUBLIC_API_URL}/redirect/discord")
     buffer = io.BytesIO()
     image.save(buffer, format="PNG")
     buffer.seek(0)
@@ -971,4 +982,5 @@ def dashboard(user_id: int) -> dict:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8000"))
-    uvicorn.run(app, host="127.0.0.1", port=port)
+    host = os.environ.get("HOST", "127.0.0.1")
+    uvicorn.run(app, host=host, port=port)

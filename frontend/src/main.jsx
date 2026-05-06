@@ -66,7 +66,7 @@ import {
 } from 'recharts';
 import './styles.css';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 
 const features = [
   {
@@ -254,7 +254,7 @@ async function api(path, options = {}) {
   try {
     response = await fetch(`${API_URL}${path}`, options);
   } catch {
-    throw new Error('Cannot connect to Vitalis API. Start the FastAPI backend on http://127.0.0.1:8000, then try again.');
+    throw new Error(`Cannot connect to Vitalis API at ${API_URL}. Check that the backend is running and VITE_API_URL is set correctly.`);
   }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
