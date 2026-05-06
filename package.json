@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "backend": "python backend/app/main.py",
+    "install:all": "npm --prefix frontend install",
+    "build": "npm --prefix frontend run build"
+  }
+}
