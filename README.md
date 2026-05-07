@@ -79,6 +79,8 @@ PUBLIC_API_URL=https://your-render-backend.onrender.com
 FRONTEND_ORIGINS=https://your-vercel-app.vercel.app
 ```
 
+This repo includes `.python-version` with `3.12` because TensorFlow `2.19.0` does not install on Python 3.13+ / 3.14. If your Render service already has a `PYTHON_VERSION` environment variable set, remove it or set it to a Python 3.12 patch version. Render gives the environment variable higher priority than `.python-version`.
+
 If you use Vercel preview deployments, add each preview URL to `FRONTEND_ORIGINS` as a comma-separated list.
 
 ## Deployment Notes
